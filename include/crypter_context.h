@@ -19,10 +19,10 @@ typedef struct crypter_context
 
 } crypter_context_t;
 
-crypter_context_t	*new_encrypter_context(const char *key, const char *input);
-crypter_context_t	*new_decrypter_context( const char *key
+crypter_context_t	*encrypter_context_new(const char *key, const char *input);
+crypter_context_t	*decrypter_context_new(const char *key
 		, const char *input, const int input_len);
-void				*free_crypter_context(crypter_context_t *crypter_ctx);
+void				*crypter_context_free(crypter_context_t *crypter_ctx);
 crypter_context_t	*crypter_context_init();
 unsigned char		*sanitize_key(const char *key);
 crypter_context_t	*handle_error(crypter_context_t *ctx);

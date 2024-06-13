@@ -1,25 +1,28 @@
-ROOT_DIR =	$(CURDIR)
-SRC_DIR =	$(ROOT_DIR)/src
-INC_DIR =	$(ROOT_DIR)/include
-BIN_DIR = 	$(ROOT_DIR)/bin
+SRC_DIR :=	src
+INC_DIR :=	include
+BIN_DIR := 	bin
+OBJ_DIR := 	obj
 
-CXX =		gcc
-CXXFLAGS =	-Wall -Wextra -I$(INC_DIR)
-TARGET =	$(BIN_DIR)/aes_crypter.a
-SRC =		$(SRC_DIR)/crypter_context.c \
-			$(SRC_DIR)/aes_crypter.c
-OBJ =		$(SRC:.c=.o)
+CXX :=		gcc
+CXXFLAGS :=	-Wall -Wextra -I$(INC_DIR)
+TARGET =	aes_crypter.a
+SRC 	 :=	$(wildcard $(SRC_DIR)/*.c)
+OBJ		 :=	$(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-all: $(TARGET)
+$(BIN_DIR)/$(TARGET) : $(OBJ) | $(BIN_DIR)
+	ar rv $@ $^
 
-$(TARGET) : $(OBJ)
-	ar ruv $(TARGET) $(OBJ)
-
-%.o: %.c
+$(OBJ): $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(OBJ_DIR):
+	mkdir $@
+
+$(BIN_DIR):
+	mkdir $@
+
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(BIN_DIR)/$(TARGET)
 
 run: $(TARGET)
 	./$(TARGET)

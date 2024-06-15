@@ -25,13 +25,20 @@ example: `gcc -o my_app file1.o file2.o aes-crypter.a -lcrypto`
 ```
 #include "aes_crypter.h"
 
-char  *encrypt(char *key, char *input, int *output_len);
-char  *decrypt(char *key, char *input, int input_len);
+char  *encrypt(char *key, const char *input, int *output_len);
+char  *decrypt(char *key, const char *input, int input_len);
 ```
+where:  
+- `key` is the encryption key. It should be 32 bytes long. if the provided key is too short, '0' characters will be added at the end. If it is too long, only the first 32 bytes will be used.
+- `input` is the input data to be encrypted or decrypted.
+- `output_len` is a pointer to an int in which the encrypted data's length will be stored.
+- `input_len` is the length of the input data to decrypt.
+
+As the encrypted data is binary data and may contain '\0' characters, encrypted data is not NULL terminated. 
 
 ### Return values
 
-encrypt returns a pointer on a NON NULL terminated `char` array. array's length will be stored in the `output_len` int. This array contains the encrypted data.   
+encrypt returns a pointer on a NON NULL terminated `char` array. array's length will be stored in `output_len` int. This array contains the encrypted data.   
   
 decrypt returns a pointer on a NULL terminated `char` array. This array contains the non encrypted data.  
 

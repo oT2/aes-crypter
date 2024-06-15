@@ -1,3 +1,17 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~             ████████╗██████╗
+      ██████╗ ╚══██╔══╝╚════██╗
+~    ██╔═══██╗   ██║    █████╔╝
+     ██║   ██║   ██║   ██╔═══╝
+~    ╚██████╔╝   ██║   ███████╗███████╗
+      ╚═════╝    ╚═╝   ╚══════╝╚══════╝
+~  * File Name     : crypter_context.c
+   * Creation Date :
+~  * Last Modified : 15 Jun 2024 - 12:25:29
+   * Created By    : oT2_
+~  * Email         : contact@ot2.dev
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include <string.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>

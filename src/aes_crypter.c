@@ -6,8 +6,8 @@
 ~    ╚██████╔╝   ██║   ███████╗███████╗
       ╚═════╝    ╚═╝   ╚══════╝╚══════╝
 ~  * File Name     : aes_crypter.c
-   * Creation Date :
-~  * Last Modified : 15 Jun 2024 - 12:23:28
+   * Creation Date : 15 Jun 2024 - 13:02:39
+~  * Last Modified : 16 Jun 2024 - 14:11:26
    * Created By    : oT2_
 ~  * Email         : contact@ot2.dev
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -17,7 +17,7 @@
 #include <openssl/err.h>
 #include "crypter_context.h"
 
-char *encrypt(const char *input, const char *key, int *returned_len)
+char *aes_encrypt(const char *key, const char *input, int *returned_len)
 {
 	crypter_context_t	*ctx;
 	char				*return_ciphertext;
@@ -26,7 +26,7 @@ char *encrypt(const char *input, const char *key, int *returned_len)
 	if (!(ctx = encrypter_context_new(key, input)))
 		return NULL;
 	if (!EVP_EncryptInit_ex(ctx->evp_cipher_ctx
-				, EVP_aes_256_cbc(), NULL, (unsigned char *)key, ctx->iv))
+				, EVP_aes_256_cbc(), NULL, (unsigned char *)ctx->key, ctx->iv))
 		return (char *)crypter_context_free(ctx);
 	if (!EVP_EncryptUpdate(ctx->evp_cipher_ctx
 				, ctx->ciphertext, &len, ctx->plaintext, ctx->plaintext_len))
@@ -46,7 +46,7 @@ char *encrypt(const char *input, const char *key, int *returned_len)
 	return return_ciphertext;
 }
 
-char *decrypt(const char *input, const char *key, const int input_len)
+char *aes_decrypt(const char *key, const char *input, const int input_len)
 {
 	crypter_context_t	*ctx;
 	char				*returntext;
@@ -63,7 +63,7 @@ char *decrypt(const char *input, const char *key, const int input_len)
 	ctx->plaintext_len = len;
 	if (!EVP_DecryptFinal_ex(ctx->evp_cipher_ctx, ctx->plaintext + len, &len))
 	{
-		//ERR_print_errors_fp(stderr);
+		ERR_print_errors_fp(stderr);
 		return (char *)crypter_context_free(ctx);
 	}
 	ctx->plaintext_len += len;

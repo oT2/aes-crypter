@@ -7,7 +7,7 @@
       ╚═════╝    ╚═╝   ╚══════╝╚══════╝
 ~  * File Name     : aes_crypter.c
    * Creation Date : 15 Jun 2024 - 13:02:39
-~  * Last Modified : 16 Jun 2024 - 14:11:26
+~  * Last Modified : 16 Jun 2024 - 17:33:52
    * Created By    : oT2_
 ~  * Email         : contact@ot2.dev
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -67,7 +67,7 @@ char *aes_decrypt(const char *key, const char *input, const int input_len)
 		return (char *)crypter_context_free(ctx);
 	}
 	ctx->plaintext_len += len;
-	returntext = (char *)malloc(sizeof(char) * ctx->plaintext_len);
+	returntext = (char *)malloc(sizeof(char) * ctx->plaintext_len + 1);
 	if (returntext == NULL)
 		return (char *)crypter_context_free(ctx);
 	memcpy(returntext, ctx->plaintext, ctx->plaintext_len);

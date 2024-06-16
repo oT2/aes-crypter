@@ -7,7 +7,7 @@
       ╚═════╝    ╚═╝   ╚══════╝╚══════╝
 ~  * File Name     : main.c
    * Creation Date : 15 Jun 2024 - 18:31:27
-~  * Last Modified : 16 Jun 2024 - 14:09:36
+~  * Last Modified : 16 Jun 2024 - 17:34:19
    * Created By    : oT2_ 
 ~  * Email         : contact@ot2.dev 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -68,7 +68,8 @@ int read_cmd(char *key, char *filename)
 	if ((plaintext = aes_decrypt(key, ciphertext, ciphertext_len)) == NULL)
 		return 0;
 	printf("File content:\n%s\n", plaintext);
-	free (plaintext);
+	free(ciphertext);
+	free(plaintext);
 	return 0;
 }
 

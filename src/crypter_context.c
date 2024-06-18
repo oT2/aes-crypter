@@ -7,7 +7,7 @@
       ╚═════╝    ╚═╝   ╚══════╝╚══════╝
 ~  * File Name     : crypter_context.c
    * Creation Date : 15 Jun 2024 - 13:04:01
-~  * Last Modified : 16 Jun 2024 - 14:12:27
+~  * Last Modified : 18 Jun 2024 - 14:05:50
    * Created By    : oT2_
 ~  * Email         : contact@ot2.dev
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -17,7 +17,8 @@
 #include <openssl/rand.h>
 #include "crypter_context.h"
 
-crypter_context_t *encrypter_context_new(const char *key, const char *input)
+crypter_context_t *encrypter_context_new(const char *key
+		, const char *input, const int input_len)
 {
 	crypter_context_t *ctx;
 
@@ -28,15 +29,15 @@ crypter_context_t *encrypter_context_new(const char *key, const char *input)
 		return (crypter_context_t *)handle_error(ctx);
 	if (!RAND_bytes(ctx->iv, sizeof(ctx->iv)))
 		return handle_error(ctx);
-	ctx->plaintext_len = strlen(input);
-	if (!(ctx->plaintext = (unsigned char *)malloc(
-					sizeof(char) * ctx->plaintext_len)))
+	ctx->plaindata_len = input_len;
+	if (!(ctx->plaindata = (unsigned char *)malloc(
+					sizeof(char) * ctx->plaindata_len)))
 		return handle_error(ctx);
-	memcpy(ctx->plaintext, (unsigned char*)input, ctx->plaintext_len);
-	ctx->ciphertext_len = ctx->plaintext_len 
-		+ BLOCK_SIZE - (ctx->plaintext_len % BLOCK_SIZE);
-	if (!(ctx->ciphertext = (unsigned char *)malloc(
-			sizeof(char) * ctx->ciphertext_len)))
+	memcpy(ctx->plaindata, (unsigned char*)input, ctx->plaindata_len);
+	ctx->cipherdata_len = ctx->plaindata_len 
+		+ BLOCK_SIZE - (ctx->plaindata_len % BLOCK_SIZE);
+	if (!(ctx->cipherdata = (unsigned char *)malloc(
+			sizeof(char) * ctx->cipherdata_len)))
 		return handle_error(ctx);
 	if (!(ctx->evp_cipher_ctx = EVP_CIPHER_CTX_new()))
 		return handle_error(ctx);
@@ -53,14 +54,14 @@ crypter_context_t *decrypter_context_new(const char *key
 		return handle_error(ctx);
 	if (!(ctx->key = sanitize_key(key)))
 		return handle_error(ctx);
-	ctx->ciphertext_len = input_len - sizeof(ctx->iv);
+	ctx->cipherdata_len = input_len - sizeof(ctx->iv);
 	memcpy(ctx->iv, (unsigned char *)input, sizeof(ctx->iv));
-	if (!(ctx->ciphertext = (unsigned char *)malloc(
-					sizeof(char) * ctx->ciphertext_len)))
+	if (!(ctx->cipherdata = (unsigned char *)malloc(
+					sizeof(char) * ctx->cipherdata_len)))
 		return handle_error(ctx);
-	memcpy(ctx->ciphertext, (unsigned char *)input + sizeof(ctx->iv)
-			, ctx->ciphertext_len);
-	if (!(ctx->plaintext = (unsigned char *)malloc(ctx->ciphertext_len)))
+	memcpy(ctx->cipherdata, (unsigned char *)input + sizeof(ctx->iv)
+			, ctx->cipherdata_len);
+	if (!(ctx->plaindata = (unsigned char *)malloc(ctx->cipherdata_len)))
 		return handle_error(ctx);
 	if (!(ctx->evp_cipher_ctx = EVP_CIPHER_CTX_new()))
 		return handle_error(ctx);
@@ -69,10 +70,10 @@ crypter_context_t *decrypter_context_new(const char *key
 
 void *crypter_context_free(crypter_context_t *ctx)
 {
-	if (ctx->ciphertext)
-		free(ctx->ciphertext);
-	if (ctx->plaintext)
-		free(ctx->plaintext);
+	if (ctx->cipherdata)
+		free(ctx->cipherdata);
+	if (ctx->plaindata)
+		free(ctx->plaindata);
 	if (ctx->key)
 		free(ctx->key);
 	if (ctx->evp_cipher_ctx)
@@ -87,8 +88,8 @@ crypter_context_t *crypter_context_init()
 	if (!(ctx = (crypter_context_t *)malloc(sizeof(crypter_context_t))))
 		return NULL;
 	ctx->evp_cipher_ctx = NULL;
-	ctx->plaintext = NULL;
-	ctx->ciphertext = NULL;
+	ctx->plaindata = NULL;
+	ctx->cipherdata = NULL;
 	ctx->key = NULL;
 	return ctx;
 }
@@ -115,13 +116,14 @@ crypter_context_t	*handle_error(crypter_context_t *ctx)
 	// Possible future improvement: 
 	// pass an int errorId as parameter. Do different things based on that id.
 	// id might tell if it is a malloc error, decrypt error etc.
-	// this should be turned on with an argument. as we might not want to polute stderr
+	// this should be turned on with an argument.
+	// as we might not want to polute stderr
 	if (ctx == NULL)
 		return NULL;
-	if (ctx->plaintext)
-		free(ctx->plaintext);
-	if (ctx->ciphertext)
-		free(ctx->ciphertext);
+	if (ctx->plaindata)
+		free(ctx->plaindata);
+	if (ctx->cipherdata)
+		free(ctx->cipherdata);
 	if (ctx->key)
 		free(ctx->key);
 	free(ctx);

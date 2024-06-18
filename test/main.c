@@ -7,7 +7,7 @@
       ╚═════╝    ╚═╝   ╚══════╝╚══════╝
 ~  * File Name     : main.c
    * Creation Date : 15 Jun 2024 - 18:31:27
-~  * Last Modified : 16 Jun 2024 - 17:34:19
+~  * Last Modified : 18 Jun 2024 - 14:07:48
    * Created By    : oT2_ 
 ~  * Email         : contact@ot2.dev 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -63,9 +63,9 @@ int read_cmd(char *key, char *filename)
 
 	if ((fd = open(filename, O_RDONLY)) < 0)
 		return 0;
-	if ((ciphertext = read_all_file(fd, &ciphertext_len)) == NULL)
+	if (!(ciphertext = read_all_file(fd, &ciphertext_len)))
 		return 0;
-	if ((plaintext = aes_decrypt(key, ciphertext, ciphertext_len)) == NULL)
+	if (!(plaintext = aes_decrypt_string(key, ciphertext, ciphertext_len)))
 		return 0;
 	printf("File content:\n%s\n", plaintext);
 	free(ciphertext);
@@ -79,7 +79,7 @@ int write_cmd(char *key, char *filename, char *content)
 	int		ciphertext_len;
 	int		fd;
 
-	ciphertext = aes_encrypt(key, content, &ciphertext_len);
+	ciphertext = aes_encrypt_string(key, content, &ciphertext_len);
 	if (ciphertext == NULL)
 		return 0;
 	if ((fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU)) < 0)

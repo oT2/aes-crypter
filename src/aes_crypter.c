@@ -7,7 +7,7 @@
       ╚═════╝    ╚═╝   ╚══════╝╚══════╝
 ~  * File Name     : aes_crypter.c
    * Creation Date : 15 Jun 2024 - 13:02:39
-~  * Last Modified : 18 Jun 2024 - 14:06:23
+~  * Last Modified : 18 Jun 2024 - 14:43:11
    * Created By    : oT2_
 ~  * Email         : contact@ot2.dev
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -19,23 +19,23 @@
 #include "aes_crypter.h"
 
 char *aes_encrypt_string(const char *key
-		, const char *plaintext, int *ciphertext_len)
+		, const char *plaintext, int *cipherdata_len)
 {
-	int		plaintext_len;
+	int	plaintext_len;
 
 	plaintext_len = strlen(plaintext);
-	return aes_encrypt_data(key, plaintext, plaintext_len, ciphertext_len);
+	return aes_encrypt_data(key, plaintext, plaintext_len, cipherdata_len);
 }
 
 char *aes_decrypt_string(const char *key
-		, const char *ciphertext, const int ciphertext_len)
+		, const char *cipherdata, const int cipherdata_len)
 {
 	char		*plaintext;
 	char		*plaindata;
 	int			plaindata_len;
 
 	if (!(plaindata = aes_decrypt_data(key
-					, ciphertext, ciphertext_len, &plaindata_len)))
+					, cipherdata, cipherdata_len, &plaindata_len)))
 		return NULL;
 	if (!(plaintext = malloc(sizeof(char) * (plaindata_len + 1))))
 	{

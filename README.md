@@ -3,7 +3,6 @@
 ## summary
 
 aes-crypter is a small C library that aims to provide easy to use functions to encrypt and decrypt data.  
-it only exposes 2 functions: encrypt() and decrypt().  
 Encryption is done using the AES-256-CBC algorithm.
 
 ## Prerequisites
@@ -29,23 +28,29 @@ example: `gcc -o my_app file1.o file2.o -LPATH_TO_LIB -laes_crypter -lcrypto`
 ```
 #include "aes_crypter.h"
 
-char  *encrypt(char *key, const char *input, int *output_len);
-char  *decrypt(char *key, const char *input, int input_len);
+char *aes_encrypt_string(const char *key, const char *plaintext, int *cipherdata_len);
+char *aes_decrypt_string(const char *key, const char *cipherdata, const int cipherdata_len);
+
+char *aes_encrypt_data(const char *key, const char *plaindata, int plaindata_len, int *cipherdata_len);
+char *aes_decrypt_data(const char *key, const char *cipherdata, const int cipherdata_len, int *plaindata_len);
 ```
 where:  
 - `key` is the encryption key. It should be 32 bytes long. if the provided key is too short, '0' characters will be appended to it. If it is too long, only the first 32 bytes will be used.
-- `input` is the input data to be encrypted or decrypted.
-- `output_len` is a pointer to an int in which the encrypted data's length will be stored.
-- `input_len` is the length of the input data to decrypt.
+- `plaintext` is the NULL terminated string to be encrypted.  
+- `plaindata` is the NON NULL terminated char array to be encrypted.
+- `plaindata_len` is the plaindata array's length.
+- `cipherdata` is the encrypted char array.
+- `cipherdata_len` is the cipherdata array's length.
 
 As the encrypted data is binary data and may contain '\0' characters, encrypted data is not NULL terminated. 
 
 ### Return values
 
-encrypt returns a pointer on a NON NULL terminated `char` array. array's length will be stored in `output_len` int. This array contains the encrypted data.
+`aes_encrypt_string()` and `aes_encrypt_data()` returns a pointer on a NON NULL terminated char array. array's length will be stored in the `cipherdata_len` int.  
   
-decrypt returns a pointer on a NULL terminated `char` array. This array contains the non encrypted data.  
+`aes_decrypt_string()` returns a pointer on a NULL terminated char array.  
+`aes_decrypt_data()` returns a pointer on a NON NULL terminated char array. Array's length will be stored in the `plaindata_len` int.
 
-for both functions, returned (char *) should be `free(char *)` after use.  
+for all functions, returned (char *) should be `free()` after use.  
 
 note: IV is prepended to the encrypted data. 

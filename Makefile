@@ -3,18 +3,18 @@ INC_DIR :=	include
 BIN_DIR := 	bin
 OBJ_DIR := 	obj
 
-CXX :=		gcc
-CXXFLAGS :=	-Wall -Wextra -I$(INC_DIR)
-TARGET =	libaes_crypter.a
-INTERFACE = aes_crypter.h
-SRC 	 :=	$(wildcard $(SRC_DIR)/*.c)
-OBJ		 :=	$(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+CXX 		:= gcc
+CXXFLAGS 	:= -Wall -Wextra -I$(INC_DIR)
+TARGET 		:= libaes_crypter.a
+INTERFACE 	:= aes_crypter.h
+SRC 	 	:= $(wildcard $(SRC_DIR)/*.c)
+OBJ		 	:= $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-CXXFLAGS_TEST := -Wall -Wextra -lcrypto -I$(BIN_DIR)/$(INC_DIR)
-TEST_TARGET 	= aes_test
-TEST_DIR		= test
-TEST_SRC		= $(wildcard $(TEST_DIR)/*.c)
-TEST_OBJ		= $(TEST_SRC:$(TEST_DIR)/%.c=$(OBJ_DIR)/%.o)
+CXXFLAGS_TEST	:= -Wall -Wextra -lcrypto -I$(BIN_DIR)/$(INC_DIR)
+TEST_TARGET 	:= aes_test
+TEST_DIR		:= test
+TEST_SRC		:= $(wildcard $(TEST_DIR)/*.c)
+TEST_OBJ		:= $(TEST_SRC:$(TEST_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 $(BIN_DIR)/$(TARGET) : $(OBJ) | $(BIN_DIR)/$(INC_DIR)
 	ar rv $@ $^
